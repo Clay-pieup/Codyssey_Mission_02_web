@@ -1,0 +1,161 @@
+/* ==========================================================
+   Instay 스타일시트
+   기본은 좁은 화면(모바일) 기준으로 쓰고,
+   화면이 넓어지면 @media 블록에서 규칙을 더한다. (모바일 우선)
+   ========================================================== */
+
+/* ---------- 1. 색과 간격을 한 곳에 모아두기 ---------- */
+:root {
+  --brand:      #e0565b;  /* 강조색(코랄) — 버튼, 링크 */
+  --brand-dark: #c4474c;  /* 강조색 진한 버전 — 마우스 올렸을 때 */
+  --text:       #222222;  /* 본문 글자 */
+  --muted:      #717171;  /* 덜 중요한 글자 */
+  --line:       #dddddd;  /* 구분선 */
+  --bg:         #ffffff;  /* 배경 */
+  --bg-soft:    #f7f7f7;  /* 살짝 눌린 배경 — 카드 */
+  --radius:     12px;     /* 모서리 둥글기 */
+  --wrap:       900px;    /* 본문 최대 너비 */
+}
+
+/* ---------- 2. 모든 요소에 적용되는 기본값 ---------- */
+* {
+  box-sizing: border-box;   /* 안쪽 여백을 너비에 포함해서 계산 */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕",
+               -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: 1.3; letter-spacing: -0.02em; }
+p { margin: 0 0 12px; }
+
+/* ---------- 3. 상단 메뉴 ---------- */
+nav {
+  position: sticky;              /* 스크롤해도 위에 붙어 있음 */
+  top: 0;
+  z-index: 10;                   /* 다른 요소보다 위에 그림 */
+  display: flex;                 /* 링크를 가로로 나열 */
+  flex-wrap: wrap;               /* 좁으면 아랫줄로 넘김 */
+  gap: 4px 20px;
+  padding: 14px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+nav a:hover { color: var(--text); }
+
+/* 메뉴의 마지막 링크(촬영 가이드 만들기)만 강조 */
+nav a:last-child { color: var(--brand); font-weight: 700; }
+
+/* ---------- 4. 공통 본문 블록 ---------- */
+section, footer, main {
+  max-width: var(--wrap);
+  margin: 0 auto;            /* 좌우 여백을 같게 → 가운데 정렬 */
+  padding: 48px 20px;
+}
+
+/* ---------- 5. 히어로 ---------- */
+#home { text-align: center; padding-top: 64px; }
+#home h1 { font-size: 40px; margin: 0 0 16px; }
+#home p  { font-size: 17px; color: var(--muted); }
+
+/* 히어로 안의 링크를 버튼 모양으로 */
+#home a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: var(--brand);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: var(--radius);
+}
+#home a:hover { background: var(--brand-dark); }
+
+/* ---------- 6. 이렇게 씁니다 (3단계) ---------- */
+#how ol {
+  list-style: none;      /* 기본 숫자 끄기 */
+  padding: 0;
+  margin: 0;
+  counter-reset: step;   /* step이라는 이름의 계산기를 0으로 초기화 */
+  display: grid;
+  gap: 16px;
+}
+
+#how li {
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* 숫자를 HTML에 적지 않고 CSS가 세어서 붙인다 */
+#how li::before {
+  counter-increment: step;      /* 계산기를 1 올리고 */
+  content: counter(step);       /* 그 값을 글자로 내보낸다 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+#how li h3 { margin: 12px 0 6px; font-size: 17px; }
+#how li p  { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* ---------- 7. 자주 묻는 질문 ---------- */
+#faq h3 {
+  margin: 0;
+  padding: 20px 0 6px;
+  border-top: 1px solid var(--line);
+  font-size: 16px;
+}
+#faq p { color: var(--muted); font-size: 15px; }
+
+/* ---------- 8. 가이드 페이지 자리표시 ---------- */
+#form-area, #result-area {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 16px;
+  color: var(--muted);
+}
+
+/* ---------- 9. 푸터 ---------- */
+footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  padding-top: 24px;
+}
+
+/* ==========================================================
+   10. 화면 폭이 700px 이상일 때만 아래 규칙을 추가한다
+   ========================================================== */
+@media (min-width: 700px) {
+
+  #home { padding-top: 96px; padding-bottom: 72px; }
+  #home h1 { font-size: 56px; }
+  #home p  { font-size: 19px; }
+
+  /* 3단계를 세로 → 가로 3칸으로 */
+  #how ol { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  nav { gap: 28px; padding: 16px 32px; }
+}
