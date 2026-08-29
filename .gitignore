@@ -1,0 +1,16 @@
+# API 키 등 비밀값 — 절대 커밋되면 안 되는 파일
+.env
+.env.local
+.env.*.local
+
+# Vercel CLI가 로컬에 만드는 연결 정보
+.vercel
+
+# 파이썬이 실행 중 만드는 캐시
+__pycache__/
+*.py[cod]
+
+# 운영체제가 만드는 부산물
+.DS_Store
+Thumbs.db
+desktop.ini
