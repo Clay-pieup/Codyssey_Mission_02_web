@@ -85,6 +85,41 @@ section, footer, main {
 }
 #home a:hover { background: var(--brand-dark); }
 
+/* ---------- 5-1. 히어로 사진 ---------- */
+.hero-photo {
+  display: block;
+  width: 100%;          /* 부모 폭에 맞춰 늘어남 */
+  height: auto;         /* 세로는 비율대로 따라옴 → 찌그러지지 않음 */
+  margin-top: 40px;
+  border-radius: var(--radius);
+  object-fit: cover;    /* 지정한 칸을 꽉 채우되 비율은 유지, 넘치는 부분은 잘라냄 */
+  aspect-ratio: 16 / 9; /* 원본 비율과 무관하게 16:9로 보여줌 */
+}
+
+/* ---------- 5-2. 사진 갤러리 ---------- */
+.photo-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.photo-grid figure { margin: 0; }
+
+.photo-grid img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;   /* 정사각형 */
+  object-fit: cover;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.photo-grid figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 /* ---------- 6. 이렇게 씁니다 (3단계) ---------- */
 #how ol {
   list-style: none;      /* 기본 숫자 끄기 */
@@ -144,6 +179,8 @@ footer {
   font-size: 13px;
   padding-top: 24px;
 }
+footer p { margin: 0 0 4px; }
+footer a { color: var(--muted); }
 
 /* ==========================================================
    10. 화면 폭이 700px 이상일 때만 아래 규칙을 추가한다
@@ -156,6 +193,9 @@ footer {
 
   /* 3단계를 세로 → 가로 3칸으로 */
   #how ol { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  /* 갤러리도 세로 → 가로 3칸으로 */
+  .photo-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
   nav { gap: 28px; padding: 16px 32px; }
 }
