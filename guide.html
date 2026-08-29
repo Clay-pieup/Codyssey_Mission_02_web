@@ -20,14 +20,34 @@
     <h1>촬영 가이드 만들기</h1>
     <p>숙소 정보를 입력하면 촬영 장면 5컷과 캡션 초안을 만들어 드립니다.</p>
 
-    <!-- U5에서 입력 폼이 들어갈 자리 -->
-    <section id="form-area">
-      <p>(입력 폼 — U5에서 만듭니다)</p>
-    </section>
+    <!-- 입력 폼 -->
+    <form id="guide-form">
+      <label for="stay-type">숙소 유형</label>
+      <select id="stay-type">
+        <option>풀빌라</option>
+        <option>독채</option>
+        <option>호텔</option>
+        <option>펜션</option>
+        <option>캠핑·글램핑</option>
+      </select>
 
-    <!-- U5에서 결과가 표시될 자리 -->
-    <section id="result-area">
-      <p>(결과 표시 영역 — U5에서 만듭니다)</p>
+      <label for="features">숙소 특징 <em>필수</em></label>
+      <textarea id="features" rows="3"
+                placeholder="예: 바다 바로 앞, 개별 스파, 반려견 동반 가능"></textarea>
+
+      <label for="tone">영상 톤</label>
+      <select id="tone">
+        <option>감성</option>
+        <option>정보</option>
+        <option>유머</option>
+      </select>
+
+      <button type="submit" id="submit-btn">가이드 만들기</button>
+    </form>
+
+    <!-- 결과가 표시될 자리. 내용은 JavaScript가 채운다. -->
+    <section id="result-area" aria-live="polite">
+      <p class="placeholder">숙소 정보를 입력하고 버튼을 누르면 여기에 결과가 나옵니다.</p>
     </section>
   </main>
 
@@ -35,5 +55,6 @@
     <p>Instay — 코디세이 AI 네이티브 미션 A2-03 학습용 프로젝트</p>
   </footer>
 
+  <script src="js/guide.js"></script>
 </body>
 </html>
