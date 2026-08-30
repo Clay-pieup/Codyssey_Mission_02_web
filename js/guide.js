@@ -1,7 +1,7 @@
 /* ==========================================================
    Instay — 촬영 가이드 생성 화면
-   U6 단계: 가짜 데이터를 없애고, 서버(api/generate.py)에게 물어본다.
-            서버는 아직 AI를 부르지 않고 받은 값을 되돌려주기만 한다.
+   U7 단계: 서버(api/generate.py)가 Gemini를 호출해 진짜 촬영 가이드를 만들어 준다.
+            화면 쪽 코드는 U5에서 만든 renderGuide()를 그대로 쓴다.
    ★ 이 파일은 file:/// 로 열면 동작하지 않는다. 서버가 없기 때문이다.
      반드시 배포 주소에서 확인할 것.
    ========================================================== */
@@ -29,7 +29,15 @@ async function fetchGuide(stayType, features, tone) {
   // 서버가 4xx / 5xx로 답하면 여기서 멈춰 세운다.
   // 이 줄이 없으면 오류 응답을 정상 데이터로 착각하고 화면을 그리려다 엉뚱하게 터진다.
   if (!response.ok) {
-    throw new Error("서버 응답 오류 (" + response.status + ")");
+    // 서버는 {"error": "..."} 형태로 이유를 알려준다. 그 문구를 그대로 쓴다.
+    let serverMessage = "";
+    try {
+      const errorBody = await response.json();
+      serverMessage = errorBody.error || "";
+    } catch (parseError) {
+      // 서버가 아니라 플랫폼이 낸 오류라면 본문이 JSON이 아닐 수 있다. 그건 무시한다.
+    }
+    throw new Error(serverMessage || ("서버 응답 오류 " + response.status));
   }
 
   return await response.json();   // 돌아온 JSON 글자를 다시 데이터로
