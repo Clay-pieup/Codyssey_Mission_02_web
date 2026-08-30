@@ -1,6 +1,9 @@
 /* ==========================================================
    Instay — 촬영 가이드 생성 화면
-   U5 단계: 아직 AI를 부르지 않는다. 가짜 데이터로 화면 흐름만 완성한다.
+   U6 단계: 가짜 데이터를 없애고, 서버(api/generate.py)에게 물어본다.
+            서버는 아직 AI를 부르지 않고 받은 값을 되돌려주기만 한다.
+   ★ 이 파일은 file:/// 로 열면 동작하지 않는다. 서버가 없기 때문이다.
+     반드시 배포 주소에서 확인할 것.
    ========================================================== */
 
 /* ---------- 0. 화면 요소를 미리 찾아둔다 ----------
@@ -13,24 +16,23 @@ const toneEl     = document.getElementById("tone");
 const submitBtn  = document.getElementById("submit-btn");
 const resultArea = document.getElementById("result-area");
 
-/* ---------- 1. 가짜 데이터 만들기 ----------
-   ★ 중요: U7에서 진짜 AI가 돌려줄 JSON과 "똑같은 모양"으로 만든다.
-   모양이 같아야 U7에서 이 함수만 통째로 갈아끼우면 되고,
-   아래 renderGuide()는 한 줄도 고치지 않아도 된다. */
-function makeMockGuide(stayType, features, tone) {
-  return {
-    scenes: [
-      "도착 컷 — " + stayType + " 입구를 정면 고정 샷으로, 3초",
-      "공간 전경 — 거실에서 창밖이 보이도록 와이드로 천천히 팬, 4초",
-      "특징 클로즈업 — \"" + features + "\" 중 가장 눈에 띄는 것 하나, 3초",
-      "사용 장면 — 실제로 쓰는 손 동작을 가까이서, 4초",
-      "마무리 — 해질 무렵 전경으로 빠지며 " + tone + " 톤 자막, 3초"
-    ],
-    caption:
-      "여기서는 짐 풀자마자 아무것도 안 해도 됐다. " +
-      stayType + "인데 " + features + ". 다음엔 이틀 잡고 올 것.",
-    hashtags: ["#" + stayType, "#숙소추천", "#감성숙소", "#국내여행", "#1박2일"]
-  };
+/* ---------- 1. 서버에게 물어보기 ----------
+   fetch()는 "이 주소로 요청을 보내라"는 명령이다.
+   답이 즉시 오지 않으므로 async / await 로 기다린다. (README 해설 참고) */
+async function fetchGuide(stayType, features, tone) {
+  const response = await fetch("/api/generate", {
+    method: "POST",                                   // 본문에 데이터를 담아 보내는 방식
+    headers: { "Content-Type": "application/json" },  // "본문은 JSON입니다"라고 알림
+    body: JSON.stringify({ stayType, features, tone })// 데이터를 JSON 글자로 바꿔 담음
+  });
+
+  // 서버가 4xx / 5xx로 답하면 여기서 멈춰 세운다.
+  // 이 줄이 없으면 오류 응답을 정상 데이터로 착각하고 화면을 그리려다 엉뚱하게 터진다.
+  if (!response.ok) {
+    throw new Error("서버 응답 오류 (" + response.status + ")");
+  }
+
+  return await response.json();   // 돌아온 JSON 글자를 다시 데이터로
 }
 
 /* ---------- 2. 결과를 화면에 그리는 함수 ----------
@@ -97,9 +99,18 @@ function endLoading() {
   submitBtn.textContent = "가이드 만들기";
 }
 
-/* ---------- 4. 버튼을 눌렀을 때 ---------- */
-form.addEventListener("submit", function (event) {
-  // form은 원래 눌리면 페이지를 새로고침한다. 그 기본 동작을 막는다.
+/* ---------- 4. 임시 오류 표시 (U8에서 제대로 만든다) ---------- */
+function showError(message) {
+  resultArea.innerHTML = "";
+  const msg = document.createElement("p");
+  msg.className = "placeholder";
+  msg.textContent = message;
+  resultArea.appendChild(msg);
+}
+
+/* ---------- 5. 버튼을 눌렀을 때 ---------- */
+form.addEventListener("submit", async function (event) {
+  // form의 기본 동작(페이지 새로고침)을 막는다.
   event.preventDefault();
 
   const stayType = stayTypeEl.value;
@@ -108,12 +119,18 @@ form.addEventListener("submit", function (event) {
 
   showLoading();
 
-  // 진짜 AI 호출은 몇 초가 걸린다. 지금은 가짜 데이터라 즉시 끝나므로
-  // "만드는 중" 상태가 보이지 않는다. 일부러 1.2초 기다려 흐름을 확인한다.
-  // U7에서 이 setTimeout 자리가 실제 fetch 호출로 바뀐다.
-  setTimeout(function () {
-    const data = makeMockGuide(stayType, features, tone);
+  // try / catch / finally
+  //  try     : 실패할 수 있는 일을 여기에 둔다
+  //  catch   : 실패하면 여기로 넘어온다
+  //  finally : 성공하든 실패하든 반드시 실행된다
+  try {
+    const data = await fetchGuide(stayType, features, tone);
     renderGuide(data);
+  } catch (error) {
+    showError("가이드를 만들지 못했습니다. (" + error.message + ")");
+  } finally {
+    // ★ 버튼 잠금 해제가 finally에 있어야 하는 이유:
+    //    try 안에 두면 실패했을 때 실행되지 않아 버튼이 영영 잠긴 채로 남는다.
     endLoading();
-  }, 1200);
+  }
 });
