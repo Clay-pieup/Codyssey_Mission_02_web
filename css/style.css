@@ -6,15 +6,41 @@
 
 /* ---------- 1. 색과 간격을 한 곳에 모아두기 ---------- */
 :root {
-  --brand:      #e0565b;  /* 강조색(코랄) — 버튼, 링크 */
-  --brand-dark: #c4474c;  /* 강조색 진한 버전 — 마우스 올렸을 때 */
+  /* 강조색(코랄). 흰 배경 위 대비 4.65:1 — WCAG AA 기준 4.5:1 통과.
+     처음에는 #e0565b 였으나 대비가 3.72:1 로 기준 미달이라 조정했다. (근거는 README) */
+  --brand:      #c9484d;
+  --brand-dark: #a83a3e;  /* 마우스 올렸을 때 — 6.29:1 */
   --text:       #222222;  /* 본문 글자 */
   --muted:      #717171;  /* 덜 중요한 글자 */
   --line:       #dddddd;  /* 구분선 */
   --bg:         #ffffff;  /* 배경 */
   --bg-soft:    #f7f7f7;  /* 살짝 눌린 배경 — 카드 */
+  --on-brand:   #ffffff;  /* 강조색 위에 올리는 글자색 */
+  --error-bg:   #fff6f6;  /* 오류 안내 배경 */
   --radius:     12px;     /* 모서리 둥글기 */
   --wrap:       900px;    /* 본문 최대 너비 */
+}
+
+/* ---------- 1-1. 다크 모드 ----------
+   사용자가 운영체제나 브라우저에서 "어두운 테마"를 켜 두었을 때만 적용된다.
+   토글 버튼을 따로 두지 않은 이유: 사용자는 이미 자기 취향을 시스템 설정에
+   말해 두었다. 그 답을 무시하고 또 물어보는 대신 그대로 따른다.
+
+   ★ 여기서 하는 일은 위 :root 의 색 값을 다시 정의하는 것뿐이다.
+     아래 모든 규칙은 var(--이름) 으로 색을 쓰고 있어 한 줄도 고치지 않는다.
+     U4에서 색을 변수로 모아 둔 설계가 여기서 값을 한다. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand:      #ff6b70;  /* 어두운 배경에서는 밝게 — 대비 확보 */
+    --brand-dark: #ff8a8e;  /* 다크에서는 마우스오버 시 더 밝아지는 쪽이 자연스럽다 */
+    --text:       #f0f0f0;
+    --muted:      #a3a8ad;
+    --line:       #33383c;
+    --bg:         #16181a;  /* 완전한 검정(#000)은 눈이 피로하다 */
+    --bg-soft:    #202325;
+    --on-brand:   #1a1012;  /* 밝은 코랄 위에는 어두운 글자가 읽힌다 */
+    --error-bg:   #2a1b1d;
+  }
 }
 
 /* ---------- 2. 모든 요소에 적용되는 기본값 ---------- */
@@ -23,6 +49,8 @@
 }
 
 body {
+  /* 브라우저 기본 요소(입력칸 테두리, 스크롤바 등)도 함께 어두워지게 한다 */
+  color-scheme: light dark;
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -97,7 +125,7 @@ section, footer, main {
   margin-top: 20px;
   padding: 14px 28px;
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   text-decoration: none;
   font-weight: 700;
   border-radius: var(--radius);
@@ -165,7 +193,7 @@ section, footer, main {
   width: 30px; height: 30px;
   border-radius: 50%;
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   font-weight: 700;
   font-size: 14px;
 }
@@ -238,7 +266,7 @@ section, footer, main {
    글자만으로 알리면 색을 구분하기 어려운 사용자가 놓칠 수 있다. */
 #guide-form textarea.has-error {
   border-color: var(--brand);
-  background: #fff6f6;
+  background: var(--error-bg);
 }
 
 #guide-form select:focus,
@@ -254,7 +282,7 @@ section, footer, main {
   border: none;
   border-radius: var(--radius);
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   font-family: inherit;
   font-size: 16px;
   font-weight: 700;
@@ -316,7 +344,7 @@ section, footer, main {
   border: 1px solid var(--brand);
   border-left: 4px solid var(--brand);   /* 왼쪽만 두껍게 → 눈에 먼저 들어옴 */
   border-radius: 8px;
-  background: #fff6f6;
+  background: var(--error-bg);
   color: var(--text);
   line-height: 1.6;
 }
