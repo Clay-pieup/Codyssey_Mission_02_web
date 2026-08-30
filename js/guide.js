@@ -202,6 +202,13 @@ form.addEventListener("submit", async function (event) {
          ② API 오류: 그 외에는 서버가 알려준 이유를 그대로 보여준다. */
     if (error.name === "AbortError") {
       showError("응답이 늦어지고 있습니다. 잠시 후 다시 시도해 주세요.");
+
+    } else if (error.name === "TypeError") {
+      // fetch가 서버에 닿지도 못한 경우(인터넷 끊김, 서버 다운 등).
+      // 이때 브라우저가 주는 메시지는 "Failed to fetch" 라는 영어 문장이라
+      // 그대로 보여주면 사용자가 무슨 말인지 알 수 없다.
+      showError("네트워크 연결을 확인해 주세요. 인터넷에 연결되어 있지 않거나 서버에 닿지 못했습니다.");
+
     } else {
       showError(error.message);
     }
