@@ -219,6 +219,28 @@ section, footer, main {
 
 #guide-form textarea { resize: vertical; }
 
+/* 입력칸 아래 작은 안내 (Ctrl+Enter 힌트) */
+.field-hint {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* 입력칸 아래 오류 안내 */
+.field-error {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+/* 문제가 생긴 입력칸을 테두리로도 표시한다.
+   글자만으로 알리면 색을 구분하기 어려운 사용자가 놓칠 수 있다. */
+#guide-form textarea.has-error {
+  border-color: var(--brand);
+  background: #fff6f6;
+}
+
 #guide-form select:focus,
 #guide-form textarea:focus {
   outline: 2px solid var(--brand);   /* 키보드로 이동할 때 어디인지 보이게 */
@@ -285,6 +307,18 @@ section, footer, main {
   border-radius: 999px;   /* 아주 큰 값 → 알약 모양 */
   font-size: 14px;
   color: var(--muted);
+}
+
+/* ---------- 8-2. 오류 안내 상자 ---------- */
+.error-box {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--brand);
+  border-left: 4px solid var(--brand);   /* 왼쪽만 두껍게 → 눈에 먼저 들어옴 */
+  border-radius: 8px;
+  background: #fff6f6;
+  color: var(--text);
+  line-height: 1.6;
 }
 
 /* ---------- 9. 푸터 ---------- */

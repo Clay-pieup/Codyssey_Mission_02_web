@@ -37,6 +37,9 @@
       <label for="features">숙소 특징 <em>필수</em></label>
       <textarea id="features" rows="3"
                 placeholder="예: 바다 바로 앞, 개별 스파, 반려견 동반 가능"></textarea>
+      <p class="field-hint">Ctrl + Enter 로도 만들 수 있습니다.</p>
+      <!-- 빈 입력일 때 여기에 안내가 뜬다. role="alert" 는 화면 낭독기가 즉시 읽게 한다. -->
+      <p class="field-error" id="features-error" role="alert" hidden></p>
 
       <label for="tone">영상 톤</label>
       <select id="tone">
